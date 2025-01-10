@@ -5,7 +5,7 @@ const HomePage = () => {
     <div className="scroll-smooth overflow-y-scroll max-h-screen">
         <Hero />
         <HomeCards />
-        <JobListings />
+        <JobListings isHome = {true} />
         <ViewAllJobs />
     </div>
   )
