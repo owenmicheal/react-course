@@ -5,6 +5,8 @@ import Card from "./Card";
 import JobListings from "./JobListings";
 import JobListing from "./JobListing";
 import ViewAllJobs from "./ViewAllJobs";
+import Loader from "./Loader";
+
 
 
 
@@ -17,4 +19,5 @@ export {
     JobListings,
     JobListing,
     ViewAllJobs,
+    Loader,
     };
