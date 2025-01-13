@@ -1,8 +1,8 @@
 
 
 const Hero = ({
-    title="React Jobs",
-    subtitle="Find your dream job as a React developer"
+    title="Najji Jobs",
+    subtitle="Find your dream job as a Software developer"
 }) => {
   return (
     <section className="bg-indigo-700 py-20 mb-4">

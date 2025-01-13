@@ -1,75 +1,93 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-const AddJobPage = ({addJobSubmit}) => {
+const EditJobPage = ({ editJob }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const [ title, setTitle ] = useState('');
-    const [ type, setType ] = useState('Full-Time');
-    const [ location, setLocation ] = useState('');
-    const [ description, setDescription ] = useState('');
-    const [ salary, setSalary ] = useState('Under $50K');
-    const [ companyName, setCompanyName ] = useState('');
-    const [ companyDescription, setCompanyDescription ] = useState('');
-    const [ contactEmail, setContactEmail ] = useState('');
-    const [ contactPhone, setContactPhone ] = useState('');
+  const [job, setJob] = useState(null); // State for the job
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [salary, setSalary] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    const fetchJob = async () => {
+      const res = await fetch(`/api/jobs/${id}`);
+      const data = await res.json();
+      setJob(data);
 
-    const submitForm = (e) => {
-        e.preventDefault();
-        const newJob = {
-            title,
-            type,
-            location,
-            description,
-            salary,
-            company: {
-                name: companyName,
-                description: companyDescription,
-                contactEmail,
-                contactPhone
-            },
+      setTitle(data.title);
+      setType(data.type);
+      setLocation(data.location);
+      setDescription(data.description);
+      setSalary(data.salary);
+      setCompanyName(data.company.name);
+      setCompanyDescription(data.company.description);
+      setContactEmail(data.company.contactEmail);
+      setContactPhone(data.company.contactPhone);
+    };
 
-            }
-       
-            addJobSubmit(newJob);
+    fetchJob();
+  }, [id]);
 
-            toast.success('Job added successfully');
-            
-            return navigate('/jobs');
-        }
-        
+  const submitForm = async (e) => {
+    e.preventDefault();
+
+    const updatedJob = {
+      title,
+      type,
+      location,
+      description,
+      salary,
+      company: {
+        name: companyName,
+        description: companyDescription,
+        contactEmail,
+        contactPhone,
+      },
+    };
+
+    await editJob(id, updatedJob);
+    toast.success('Job Updated Successfully');
+    navigate(`/job/${id}`);
+  };
+
+  if (!job) {
+    return <p>Loading...</p>;
+  }
 
   return (
-
-    <section className="bg-indigo-50">
-      <div className="container m-auto max-w-2xl py-24">
-        <div
-          className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0"
-        >
+    <section className='bg-indigo-50'>
+      <div className='container m-auto max-w-2xl py-24'>
+        <div className='bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0'>
           <form onSubmit={submitForm}>
-            <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
-
-            <div className="mb-4">
-              <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
-                >Job Type</label
-              >
+            <h2 className='text-3xl text-center font-semibold mb-6'>
+              Update Job
+            </h2>
+            {/* Job Type */}
+            <div className='mb-4'>
+              <label htmlFor='type' className='block text-gray-700 font-bold mb-2'>
+                Job Type
+              </label>
               <select
-                id="type"
-                name="type"
-                className="border rounded w-full py-2 px-3"
-                required
+                id='type'
+                className='border rounded w-full py-2 px-3'
                 value={type}
                 onChange={(e) => setType(e.target.value)}
               >
-                <option value="Full-Time">Full-Time</option>
-                <option value="Part-Time">Part-Time</option>
-                <option value="Remote">Remote</option>
-                <option value="Internship">Internship</option>
+                <option value='Full-Time'>Full-Time</option>
+                <option value='Part-Time'>Part-Time</option>
+                <option value='Remote'>Remote</option>
+                <option value='Internship'>Internship</option>
               </select>
             </div>
-
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2"
                 >Job Listing Name</label
@@ -212,20 +230,19 @@ const AddJobPage = ({addJobSubmit}) => {
                 onChange={(e) => setContactPhone(e.target.value)}
               />
             </div>
-
-            <div>
+            <div className='mt-6'>
               <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-                type="submit"
+                type='submit'
+                className='bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline'
               >
-                Add Job
+                Update Job
               </button>
             </div>
           </form>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default AddJobPage;
+export default EditJobPage;
